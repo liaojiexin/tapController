@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.UserDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.User" >
+    <id column="userId" property="userId" jdbcType="INTEGER" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="userTel" property="userTel" jdbcType="VARCHAR" />
+    <result column="roleId" property="roleId" jdbcType="INTEGER" />
+    <result column="createTime" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="loginTime" property="loginTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    userId, userName, password, `name`, userTel, roleId, createTime, loginTime,
+    status, remark
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where userId = #{userId}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_user
+    where userId = #{userId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vcmy.entity.User" useGeneratedKeys="true" keyProperty="userId">
+    insert into sys_user (userId, userName, password, 
+      name, userTel,
+      roleId, createTime,
+      loginTime, status, remark
+      )
+    values (#{userId,jdbcType=INTEGER}, #{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{userTel,jdbcType=VARCHAR},
+        #{roleId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+      #{loginTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.User" useGeneratedKeys="true" keyProperty="userId">
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        userId,
+      </if>
+      <if test="userName != null" >
+        userName,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="userTel != null" >
+        userTel,
+      </if>
+      <if test="roleId != null" >
+        roleId,
+      </if>
+        createTime,
+      <if test="loginTime != null" >
+        loginTime,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        #{userTel,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      sysdate(),
+      <if test="loginTime != null" >
+        #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.User" >
+    update sys_user
+    <set >
+      <if test="userName != null" >
+        userName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        userTel = #{userTel,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        roleId = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginTime != null" >
+        loginTime = #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.User" >
+    update sys_user
+    set userName = #{userName,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      userTel = #{userTel,jdbcType=VARCHAR},
+      roleId = #{roleId,jdbcType=INTEGER},
+      createTime = #{createTime,jdbcType=TIMESTAMP},
+      loginTime = #{loginTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByUserName" parameterType="com.vcmy.entity.User" >
+    update sys_user
+    <set >
+      <if test="userName != null" >
+        userName = #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="userTel != null" >
+        userTel = #{userTel,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        roleId = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        createTime = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="loginTime != null" >
+        loginTime = #{loginTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userName = #{userName,jdbcType=INTEGER}
+  </update>
+  <delete id="deleteUserById" parameterType="java.lang.Integer">
+		delete from sys_user where userId = #{userId}
+    </delete>
+
+  <select id="selectUserList" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from sys_user
+    <where>
+      <if test="searchValue != null and searchValue != ''">AND userName like concat('%',#{searchValue},'%') </if>
+      <if test="status !=null ">And status = #{status}</if>
+      <if test="userName !=null and userName!='' ">And userName = #{userName}</if>
+    </where>
+  </select>
+
+  <select id="selectUserByName" parameterType="String" resultMap="BaseResultMap">
+    select
+    a.`userId`,
+    a.`userName`,
+    a.`userTel`,
+    a.`status`,
+    a.`createTime`,
+    a.`loginTime`,
+    a.`roleId`,
+    a.`name`,
+    a.`remark`,
+    a.`password`
+    from sys_user a
+    <where> userName = #{userName} </where>
+  </select>
+
+  <select id="selectUserById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    b.`role_name`
+    <!-- ,c.`office_name` -->
+    ,a.`password`,
+    <include refid="Base_Column_List" />
+    from sys_user a
+    left join sys_role b on a.roleId = b.roleId
+    <where> a.userId = #{userId} </where>
+  </select>
+
+
+  <delete id="batchDeleteUser" parameterType="String">
+    delete from sys_user where userId in
+    <foreach collection="array" item="userId" open="(" separator=","  close=")">
+      #{userId}
+    </foreach>
+  </delete>
+
+  <select id="checkUserNameUnique" parameterType="String" resultType="int">
+		select count(1) from sys_user where userName=#{loginName}
+	</select>
+
+  <update id="updateStatus" parameterType="User">
+		update sys_user set `status` = #{status} where `userId` = #{userId}
+	</update>
+
+  <select id="selectByRoleId" parameterType="java.lang.Integer" resultType="int">
+		select count(userId) from sys_user where roleId=#{roleId}
+	</select>
+
+  <update id="md5ToPbkdf2" parameterType="User">
+		update sys_user set password=#{password} where userId=#{userId}
+	</update>
+
+</mapper>

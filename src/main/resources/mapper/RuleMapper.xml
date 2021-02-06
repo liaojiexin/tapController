@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.RuleDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.Rule" >
+    <id column="ruleId" property="ruleId" jdbcType="INTEGER" />
+    <result column="vlanRange" property="vlanRange" jdbcType="INTEGER" />
+    <result column="sourceMac" property="sourceMac" jdbcType="VARCHAR" />
+    <result column="destinationMac" property="destinationMac" jdbcType="VARCHAR" />
+    <result column="mplsLabel" property="mplsLabel" jdbcType="INTEGER" />
+    <result column="mplsTc" property="mplsTc" jdbcType="INTEGER" />
+    <result column="sourceIp" property="sourceIp" jdbcType="VARCHAR" />
+    <result column="destinationIp" property="destinationIp" jdbcType="VARCHAR" />
+    <result column="protocol" property="protocol" jdbcType="VARCHAR" />
+    <result column="sourcePort" property="sourcePort" jdbcType="INTEGER" />
+    <result column="destinationPort" property="destinationPort" jdbcType="INTEGER" />
+    <result column="tcpFlag" property="tcpFlag" jdbcType="VARCHAR" />
+    <result column="vlanAction" property="vlanAction" jdbcType="VARCHAR" />
+    <result column="vlanId" property="vlanId" jdbcType="INTEGER" />
+    <result column="mplsAction" property="mplsAction" jdbcType="VARCHAR" />
+    <result column="mplsActionLabel" property="mplsActionLabel" jdbcType="INTEGER" />
+    <result column="updateSourceIp" property="updateSourceIp" jdbcType="VARCHAR" />
+    <result column="updateDestinationIp" property="updateDestinationIp" jdbcType="VARCHAR" />
+    <result column="updateSourceMac" property="updateSourceMac" jdbcType="VARCHAR" />
+    <result column="updateDestinationMac" property="updateDestinationMac" jdbcType="VARCHAR" />
+    <result column="messageTruncate" property="messageTruncate" jdbcType="INTEGER" />
+    <!-- 多对一的关系 多个规则对应一个出端口组-->
+    <!-- column：指的是数据库队列名，property: 指的是属性名称, javaType：指的是属性的类型 -->
+    <association property="outPortGroup" javaType="com.vcmy.entity.OutPortGroup">
+      <id column="outPortGroupId" property="outPortGroupId" jdbcType="INTEGER" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    ruleId, vlanRange, sourceMac, destinationMac, mplsLabel, mplsTc, sourceIp, destinationIp,
+    protocol, sourcePort, destinationPort, tcpFlag, vlanAction, vlanId, mplsAction, mplsActionLabel, 
+    updateSourceIp, updateDestinationIp, updateSourceMac, updateDestinationMac, messageTruncate,outPortGroupId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from rule
+    where ruleId = #{ruleId,jdbcType=INTEGER}
+  </select>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.Rule" useGeneratedKeys="true" keyProperty="ruleId" keyColumn="ruleId">
+    insert into rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="ruleId != null" >
+        ruleId,
+      </if>
+      <if test="vlanRange != null" >
+        vlanRange,
+      </if>
+      <if test="sourceMac != null and sourceMac !=''" >
+        sourceMac,
+      </if>
+      <if test="destinationMac != null and destinationMac!=''" >
+        destinationMac,
+      </if>
+      <if test="mplsLabel != null" >
+        mplsLabel,
+      </if>
+      <if test="mplsTc != null" >
+        mplsTc,
+      </if>
+      <if test="sourceIp != null and sourceIp!=''" >
+        sourceIp,
+      </if>
+      <if test="destinationIp != null and destinationIp!=''" >
+        destinationIp,
+      </if>
+      <if test="protocol != null and protocol!=''" >
+        protocol,
+      </if>
+      <if test="sourcePort != null" >
+        sourcePort,
+      </if>
+      <if test="destinationPort != null" >
+        destinationPort,
+      </if>
+      <if test="tcpFlag != null and tcpFlag!=''" >
+        tcpFlag,
+      </if>
+      <if test="vlanAction != null and vlanAction!=''" >
+        vlanAction,
+      </if>
+      <if test="vlanId != null" >
+        vlanId,
+      </if>
+      <if test="mplsAction != null and mplsAction!=''" >
+        mplsAction,
+      </if>
+      <if test="mplsActionLabel != null" >
+        mplsActionLabel,
+      </if>
+      <if test="updateSourceIp != null and updateSourceIp!=''" >
+        updateSourceIp,
+      </if>
+      <if test="updateDestinationIp != null and updateDestinationIp!=''" >
+        updateDestinationIp,
+      </if>
+      <if test="updateSourceMac != null and updateSourceMac!=''" >
+        updateSourceMac,
+      </if>
+      <if test="updateDestinationMac != null and updateDestinationMac!=''" >
+        updateDestinationMac,
+      </if>
+      <if test="messageTruncate != null" >
+        messageTruncate,
+      </if>
+      <if test="outPortGroup.outPortGroupId!=null">
+        outPortGroupId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="ruleId != null" >
+        #{ruleId,jdbcType=INTEGER},
+      </if>
+      <if test="vlanRange != null" >
+        #{vlanRange,jdbcType=INTEGER},
+      </if>
+      <if test="sourceMac != null and sourceMac!=''" >
+        #{sourceMac,jdbcType=VARCHAR},
+      </if>
+      <if test="destinationMac != null and destinationMac!=''" >
+        #{destinationMac,jdbcType=VARCHAR},
+      </if>
+      <if test="mplsLabel != null" >
+        #{mplsLabel,jdbcType=INTEGER},
+      </if>
+      <if test="mplsTc != null" >
+        #{mplsTc,jdbcType=INTEGER},
+      </if>
+      <if test="sourceIp != null and sourceIp!=''" >
+        #{sourceIp,jdbcType=VARCHAR},
+      </if>
+      <if test="destinationIp != null and destinationIp!=''" >
+        #{destinationIp,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null and protocol!=''" >
+        #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcePort != null" >
+        #{sourcePort,jdbcType=INTEGER},
+      </if>
+      <if test="destinationPort != null" >
+        #{destinationPort,jdbcType=INTEGER},
+      </if>
+      <if test="tcpFlag != null and tcpFlag!=''" >
+        #{tcpFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanAction != null and vlanAction!=''" >
+        #{vlanAction,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanId != null" >
+        #{vlanId,jdbcType=INTEGER},
+      </if>
+      <if test="mplsAction != null and mplsAction!=''" >
+        #{mplsAction,jdbcType=VARCHAR},
+      </if>
+      <if test="mplsActionLabel != null" >
+        #{mplsActionLabel,jdbcType=INTEGER},
+      </if>
+      <if test="updateSourceIp != null and updateSourceIp!=''" >
+        #{updateSourceIp,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDestinationIp != null and updateDestinationIp!=''" >
+        #{updateDestinationIp,jdbcType=VARCHAR},
+      </if>
+      <if test="updateSourceMac != null and updateSourceMac!=''" >
+        #{updateSourceMac,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDestinationMac != null and updateDestinationMac!=''" >
+        #{updateDestinationMac,jdbcType=VARCHAR},
+      </if>
+      <if test="messageTruncate != null" >
+        #{messageTruncate,jdbcType=INTEGER},
+      </if>
+      <if test="outPortGroup.outPortGroupId!=null">
+        #{outPortGroup.outPortGroupId},
+      </if>
+    </trim>
+  </insert>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from rule
+    where ruleId = #{ruleId,jdbcType=INTEGER}
+  </delete>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.Rule" >
+    update rule
+    <set >
+      <if test="vlanRange != null" >
+        vlanRange = #{vlanRange,jdbcType=INTEGER},
+      </if>
+      <if test="sourceMac != null" >
+        sourceMac = #{sourceMac,jdbcType=VARCHAR},
+      </if>
+      <if test="destinationMac != null" >
+        destinationMac = #{destinationMac,jdbcType=VARCHAR},
+      </if>
+      <if test="mplsLabel != null" >
+        mplsLabel = #{mplsLabel,jdbcType=INTEGER},
+      </if>
+      <if test="mplsTc != null" >
+        mplsTc = #{mplsTc,jdbcType=INTEGER},
+      </if>
+      <if test="sourceIp != null" >
+        sourceIp = #{sourceIp,jdbcType=VARCHAR},
+      </if>
+      <if test="destinationIp != null" >
+        destinationIp = #{destinationIp,jdbcType=VARCHAR},
+      </if>
+      <if test="protocol != null" >
+        protocol = #{protocol,jdbcType=VARCHAR},
+      </if>
+      <if test="sourcePort != null" >
+        sourcePort = #{sourcePort,jdbcType=INTEGER},
+      </if>
+      <if test="destinationPort != null" >
+        destinationPort = #{destinationPort,jdbcType=INTEGER},
+      </if>
+      <if test="tcpFlag != null" >
+        tcpFlag = #{tcpFlag,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanAction != null" >
+        vlanAction = #{vlanAction,jdbcType=VARCHAR},
+      </if>
+      <if test="vlanId != null" >
+        vlanId = #{vlanId,jdbcType=INTEGER},
+      </if>
+      <if test="mplsAction != null" >
+        mplsAction = #{mplsAction,jdbcType=VARCHAR},
+      </if>
+      <if test="mplsActionLabel != null" >
+        mplsActionLabel = #{mplsActionLabel,jdbcType=INTEGER},
+      </if>
+      <if test="updateSourceIp != null" >
+        updateSourceIp = #{updateSourceIp,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDestinationIp != null" >
+        updateDestinationIp = #{updateDestinationIp,jdbcType=VARCHAR},
+      </if>
+      <if test="updateSourceMac != null" >
+        updateSourceMac = #{updateSourceMac,jdbcType=VARCHAR},
+      </if>
+      <if test="updateDestinationMac != null" >
+        updateDestinationMac = #{updateDestinationMac,jdbcType=VARCHAR},
+      </if>
+      <if test="messageTruncate != null" >
+        messageTruncate = #{messageTruncate,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ruleId = #{ruleId,jdbcType=INTEGER}
+  </update>
+  <!--<insert id="insert" parameterType="com.vcmy.entity.Rule" >
+    insert into rule (ruleId, vlanRange, sourceMac,
+      destinationMac, mplsLabel, mplsTc,
+      sourceIp, destinationIp, protocol,
+      sourcePort, destinationPort, tcpFlag,
+      vlanAction, vlanId, mplsAction,
+      mplsActionLabel, updateSourceIp, updateDestinationIp,
+      updateSourceMac, updateDestinationMac,
+      messageTruncate)
+    values (#{ruleId,jdbcType=INTEGER}, #{vlanRange,jdbcType=INTEGER}, #{sourceMac,jdbcType=VARCHAR},
+      #{destinationMac,jdbcType=VARCHAR}, #{mplsLabel,jdbcType=INTEGER}, #{mplsTc,jdbcType=INTEGER},
+      #{sourceIp,jdbcType=VARCHAR}, #{destinationIp,jdbcType=VARCHAR}, #{protocol,jdbcType=VARCHAR},
+      #{sourcePort,jdbcType=INTEGER}, #{destinationPort,jdbcType=INTEGER}, #{tcpFlag,jdbcType=VARCHAR},
+      #{vlanAction,jdbcType=VARCHAR}, #{vlanId,jdbcType=INTEGER}, #{mplsAction,jdbcType=VARCHAR},
+      #{mplsActionLabel,jdbcType=INTEGER}, #{updateSourceIp,jdbcType=VARCHAR}, #{updateDestinationIp,jdbcType=VARCHAR},
+      #{updateSourceMac,jdbcType=VARCHAR}, #{updateDestinationMac,jdbcType=VARCHAR},
+      #{messageTruncate,jdbcType=INTEGER})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.Rule" >
+    update rule
+    set vlanRange = #{vlanRange,jdbcType=INTEGER},
+      sourceMac = #{sourceMac,jdbcType=VARCHAR},
+      destinationMac = #{destinationMac,jdbcType=VARCHAR},
+      mplsLabel = #{mplsLabel,jdbcType=INTEGER},
+      mplsTc = #{mplsTc,jdbcType=INTEGER},
+      sourceIp = #{sourceIp,jdbcType=VARCHAR},
+      destinationIp = #{destinationIp,jdbcType=VARCHAR},
+      protocol = #{protocol,jdbcType=VARCHAR},
+      sourcePort = #{sourcePort,jdbcType=INTEGER},
+      destinationPort = #{destinationPort,jdbcType=INTEGER},
+      tcpFlag = #{tcpFlag,jdbcType=VARCHAR},
+      vlanAction = #{vlanAction,jdbcType=VARCHAR},
+      vlanId = #{vlanId,jdbcType=INTEGER},
+      mplsAction = #{mplsAction,jdbcType=VARCHAR},
+      mplsActionLabel = #{mplsActionLabel,jdbcType=INTEGER},
+      updateSourceIp = #{updateSourceIp,jdbcType=VARCHAR},
+      updateDestinationIp = #{updateDestinationIp,jdbcType=VARCHAR},
+      updateSourceMac = #{updateSourceMac,jdbcType=VARCHAR},
+      updateDestinationMac = #{updateDestinationMac,jdbcType=VARCHAR},
+      messageTruncate = #{messageTruncate,jdbcType=INTEGER}
+    where ruleId = #{ruleId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectMaxId" resultType="java.lang.Integer">
+    select max(ruleId) from rule
+  </select>-->
+</mapper>

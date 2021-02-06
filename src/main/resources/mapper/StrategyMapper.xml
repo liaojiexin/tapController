@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.StrategyDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.Strategy" >
+    <id column="strategyId" property="strategyId" jdbcType="INTEGER" />
+    <result column="flowStatistics" property="flowStatistics" jdbcType="VARCHAR" />
+    <!-- 一对多的关系 一个策略有多个出端口组-->
+    <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+    <collection property="outPortGroupList" ofType="com.vcmy.entity.OutPortGroup">
+      <id column="outPortGroupId" property="outPortGroupId" jdbcType="INTEGER" />
+    </collection>
+    <!-- 一对多的关系 一个策略有一个入端口组-->
+    <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+    <collection property="inPortGroup" ofType="com.vcmy.entity.Port">
+      <result column="portId" property="portId" jdbcType="INTEGER" />
+      <result column="portName" property="portName" jdbcType="VARCHAR" />
+      <result column="state" property="state" jdbcType="VARCHAR" />
+      <result column="description" property="description" jdbcType="VARCHAR" />
+      <result column="type" property="type" jdbcType="INTEGER" />
+      <result column="inPacket" property="inPacket" jdbcType="VARCHAR" />
+      <result column="outPacket" property="outPacket" jdbcType="VARCHAR" />
+      <result column="inRate" property="inRate" jdbcType="VARCHAR" />
+      <result column="outRate" property="outRate" jdbcType="VARCHAR" />
+      <result column="rate" property="rate" jdbcType="VARCHAR" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    strategyId, flowStatistics,
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select * from strategy,port,strategy_port,outportgroup
+    where strategy_port.portId=port.portId and strategy.strategyId=strategy_port.strategyId
+      and strategy.strategyId=outportgroup.strategyId and strategy.strategyId = #{strategyId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from strategy
+    where strategyId = #{strategyId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vcmy.entity.Strategy" >
+    insert into strategy (strategyId,  flowStatistics)
+    values (#{strategyId,jdbcType=INTEGER}, #{flowStatistics,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.Strategy" useGeneratedKeys="true" keyColumn="strategyId" keyProperty="strategyId">
+    insert into strategy
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="strategyId != null" >
+        strategyId,
+      </if>
+      <if test="flowStatistics != null" >
+        flowStatistics,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="strategyId != null" >
+        #{strategyId,jdbcType=INTEGER},
+      </if>
+      <if test="flowStatistics != null" >
+        #{flowStatistics,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.Strategy" >
+    update strategy
+    <set >
+      <if test="flowStatistics != null" >
+        flowStatistics = #{flowStatistics,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where strategyId = #{strategyId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.Strategy" >
+    update strategy
+    set flowStatistics = #{flowStatistics,jdbcType=VARCHAR}
+    where strategyId = #{strategyId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectStrategy" resultMap="BaseResultMap">
+    select
+    *
+    from strategy,port,strategy_port,outportgroup
+    <where>
+      strategy_port.portId=port.portId and strategy.strategyId=strategy_port.strategyId
+      and strategy.strategyId=outportgroup.strategyId
+      <if test="searchValue!=null">
+        AND strategy.strategyId = #{searchValue}
+      </if>
+      <if test="inPortGroup!=null and inPortGroup.size()>0 and inPortGroup[0].portId!=null">
+        and strategy.strategyId in (select strategyId from strategy_port where
+        strategy_port.portId =#{inPortGroup[0].portId,jdbcType=INTEGER})
+      </if>
+      <if test="outPortGroupList!=null and outPortGroupList.size()>0 and outPortGroupList[0].outPortGroup!=null
+        and outPortGroupList[0].outPortGroup.size()>0 and outPortGroupList[0].outPortGroup[0].portId!=null">
+        and strategy.strategyId in (select outportgroup.strategyId from outportgroup_port,outportgroup where
+        outportgroup.outPortGroupId=outportgroup_port.outPortGroupId and
+        outportgroup_port.portId =#{outPortGroupList[0].outPortGroup[0].portId,jdbcType=INTEGER} )
+      </if>
+      <if test="outPortGroupList!=null and outPortGroupList.size()>0 and outPortGroupList[0].ruleList!=null
+      and outPortGroupList[0].ruleList.size()>0 and outPortGroupList[0].ruleList[0].ruleId!=null">
+        and strategy.strategyId in
+        (select outportgroup.strategyId from rule,outportgroup
+         where rule.outPortGroupId = outportgroup.outPortGroupId and
+         rule.ruleId =#{outPortGroupList[0].ruleList[0].ruleId,jdbcType=INTEGER})
+      </if>
+    </where>
+  </select>
+
+  <select id="selectMaxid" resultType="java.lang.Integer">
+    SELECT Auto_increment
+    FROM information_schema.`TABLES`
+    WHERE  table_name = 'strategy'
+  </select>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.RolePermissionDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.RolePermission" >
+    <id column="permissionId" property="permissionId" jdbcType="INTEGER" />
+    <id column="roleId" property="roleId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    permissionId, roleId
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_role_permission
+    where permissionId = #{permissionId,jdbcType=INTEGER} and roleId = # {roleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_role_permission
+    where roleId = #{roleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vcmy.entity.RolePermission" >
+    insert into sys_role_permission (permissionId, roleId)
+    values (#{permissionId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.RolePermission" >
+    insert into sys_role_permission
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="permissionId != null" >
+        permissionId,
+      </if>
+      <if test="roleId != null" >
+        roleId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="permissionId != null" >
+        #{permissionId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.RolePermission" >
+    update sys_role_permission
+    <set >
+      <if test="roleId != null" >
+        roleId = #{roleId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.RolePermission" >
+    update sys_role_permission
+    set roleId = #{roleId,jdbcType=INTEGER}
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </update>
+
+  <delete id="deleteRolePermissionByRoleId" parameterType="java.lang.Integer">
+		delete from sys_role_permission where
+		roleId =#{roleId}
+	</delete>
+</mapper>

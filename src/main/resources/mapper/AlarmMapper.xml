@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.AlarmDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.Alarm" >
+    <id column="alarmId" property="alarmId" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="rank" property="rank" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="day" property="day" jdbcType="INTEGER" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    alarmId, description, rank, time, day, state
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from alarm
+    where alarmId = #{alarmId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from alarm
+    where alarmId = #{alarmId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vcmy.entity.Alarm" >
+    insert into alarm (alarmId, description, rank, 
+      time, day, state)
+    values (#{alarmId,jdbcType=INTEGER}, #{description,jdbcType=VARCHAR}, #{rank,jdbcType=VARCHAR},
+      #{time,jdbcType=TIMESTAMP}, #{day,jdbcType=INTEGER}, #{state,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.Alarm" >
+    insert into alarm
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="alarmId != null" >
+        alarmId,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="rank != null" >
+        rank,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="day != null" >
+        day,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="alarmId != null" >
+        #{alarmId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="rank != null" >
+        #{rank,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="day != null" >
+        #{day,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.Alarm" >
+    update alarm
+    <set >
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="rank != null" >
+        rank = #{rank,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="day != null" >
+        day = #{day,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where alarmId = #{alarmId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.Alarm" >
+    update alarm
+    set description = #{description,jdbcType=VARCHAR},
+      rank = #{rank,jdbcType=VARCHAR},
+      time = #{time,jdbcType=TIMESTAMP},
+      day = #{day,jdbcType=INTEGER},
+      state = #{state,jdbcType=VARCHAR}
+    where alarmId = #{alarmId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectPendAlarm" resultType="java.lang.Integer">
+    select count(1) from alarm where state='待处理'
+  </select>
+
+  <select id="selectCountAlarm" resultType="java.lang.Integer">
+    select count(1) from alarm
+  </select>
+
+  <select id="selectUrgency" resultType="java.lang.Float">
+    select left((select count(1) from alarm where rank='紧急')/(select count(1) from alarm)*100,5) as percent;
+  </select>
+
+  <select id="selectpImportant" resultType="java.lang.Float">
+    select left((select count(1) from alarm where rank='重要')/(select count(1) from alarm)*100,5) as percent;
+  </select>
+
+  <select id="selectMinor" resultType="java.lang.Float">
+    select left((select count(1) from alarm where rank='次要')/(select count(1) from alarm)*100,5) as percent;
+  </select>
+
+  <select id="selectPrompt" resultType="java.lang.Float">
+    select left((select count(1) from alarm where rank='提示')/(select count(1) from alarm)*100,5) as percent;
+  </select>
+
+  <select id="alarmAll" resultType="com.vcmy.entity.Alarm">
+    select * from alarm
+    <where>
+      <if test="START!=null  or END!=null ">and `time` between #{START} and #{END}</if>
+      <if test="alarm.state!='' and alarm.state!=null">and state like concat('%',#{alarm.state},'%')</if>
+      <if test="alarm.searchValue != null and alarm.searchValue != ''">and alarmId like concat('%',#{alarm.searchValue},'%') </if>
+    </where>
+  </select>
+
+  <insert id="insertAlarm" >
+    insert into alarm
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="alarmId != null" >
+        alarmId,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="rank != null" >
+        rank,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="day != null" >
+        day,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="alarmId != null" >
+        #{alarmId,jdbcType=INTEGER},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="rank != null" >
+        #{rank,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="day != null" >
+        #{day,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=VARCHAR},
+      </if>
+    </trim>
+      on DUPLICATE key update
+      <trim suffixOverrides=",">
+          <if test="description != null" >
+            description = #{description,jdbcType=VARCHAR},
+          </if>
+          <if test="rank != null" >
+            rank = #{rank,jdbcType=VARCHAR},
+          </if>
+          <if test="time != null" >
+            time = #{time,jdbcType=TIMESTAMP},
+          </if>
+          <if test="day != null" >
+            day = #{day,jdbcType=INTEGER},
+          </if>
+          <if test="state != null" >
+            state = #{state,jdbcType=VARCHAR},
+          </if>
+      </trim>
+  </insert>
+</mapper>

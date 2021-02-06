@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.PermissionDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.Permission" >
+    <id column="permissionId" property="permissionId" jdbcType="INTEGER" />
+    <result column="permissionName" property="permissionName" jdbcType="VARCHAR" />
+    <result column="parentId" property="parentId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR"/>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    permissionId, permissionName, parentId,url
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_permission
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_permission
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vcmy.entity.Permission" >
+    insert into sys_permission (permissionId, permissionName, parentId,url
+      )
+    values (#{permissionId,jdbcType=INTEGER}, #{permissionName,jdbcType=VARCHAR}, #{parentId,jdbcType=INTEGER},#{url,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.Permission" >
+    insert into sys_permission
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="permissionId != null" >
+        permissionId,
+      </if>
+      <if test="permissionName != null" >
+        permissionName,
+      </if>
+      <if test="parentId != null" >
+        parentId,
+      </if>
+      <if test="url != null" >
+        url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="permissionId != null" >
+        #{permissionId,jdbcType=INTEGER},
+      </if>
+      <if test="permissionName != null" >
+        #{permissionName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.Permission" >
+    update sys_permission
+    <set >
+      <if test="permissionName != null" >
+        permissionName = #{permissionName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null" >
+        parentId = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="url != null" >
+        permissionName = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.Permission" >
+    update sys_permission
+    set permissionName = #{permissionName,jdbcType=VARCHAR},
+      parentId = #{parentId,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR}
+    where permissionId = #{permissionId,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectAllPermission" parameterType="com.vcmy.entity.Permission" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from sys_permission
+  </select>
+
+  <select id="selectPermissionByRoleId" parameterType="java.lang.Integer" resultType="com.vcmy.entity.Permission">
+    select b.permissionId, b.permissionName, b.parentId,b.url from sys_role a,sys_permission b,sys_role_permission c
+    where a.roleId=c.roleId and b.permissionId=c.permissionId and c.roleId=#{roleId}
+  </select>
+
+
+  <resultMap id="SecurityMap" type="com.vcmy.entity.RolePermission" >
+    <id column="permissionId" property="permissionId" jdbcType="INTEGER" />
+    <id column="roleId" property="roleId" jdbcType="INTEGER" />
+    <result column="url" property="url" jdbcType="VARCHAR"/>
+  </resultMap>
+  <select id="getAllPermission" resultMap="SecurityMap">
+    select a.permissionId as permissionId,b.roleId as roleId,a.url as url from
+    sys_permission a left join sys_role_permission b
+    on a.permissionId=b.permissionId order by permissionId;
+  </select>
+</mapper>

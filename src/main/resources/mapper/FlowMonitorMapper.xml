@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.FlowMonitorDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.FlowMonitor" >
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="totalFlow" property="totalFlow" jdbcType="VARCHAR" />
+    <result column="rxFlow" property="rxFlow" jdbcType="VARCHAR" />
+    <result column="txFlow" property="txFlow" jdbcType="VARCHAR" />
+    <result column="rxPackage" property="rxPackage" jdbcType="VARCHAR" />
+    <result column="txPackage" property="txPackage" jdbcType="VARCHAR" />
+    <result column="lossPacket" property="lossPacket" jdbcType="REAL" />
+  </resultMap>
+  <insert id="insert" parameterType="com.vcmy.entity.FlowMonitor" >
+    insert into flow_monitor (time, totalFlow, rxFlow, 
+      txFlow, rxPackage, txPackage, 
+      lossPacket)
+    values (#{time,jdbcType=TIMESTAMP}, #{totalFlow,jdbcType=VARCHAR}, #{rxFlow,jdbcType=VARCHAR},
+      #{txFlow,jdbcType=VARCHAR}, #{rxPackage,jdbcType=VARCHAR}, #{txPackage,jdbcType=VARCHAR},
+      #{lossPacket,jdbcType=REAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.FlowMonitor" >
+    insert into flow_monitor
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="totalFlow != null" >
+        totalFlow,
+      </if>
+      <if test="rxFlow != null" >
+        rxFlow,
+      </if>
+      <if test="txFlow != null" >
+        txFlow,
+      </if>
+      <if test="rxPackage != null" >
+        rxPackage,
+      </if>
+      <if test="txPackage != null" >
+        txPackage,
+      </if>
+      <if test="lossPacket != null" >
+        lossPacket,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalFlow != null" >
+        #{totalFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="rxFlow != null" >
+        #{rxFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="txFlow != null" >
+        #{txFlow,jdbcType=VARCHAR},
+      </if>
+      <if test="rxPackage != null" >
+        #{rxPackage,jdbcType=VARCHAR},
+      </if>
+      <if test="txPackage != null" >
+        #{txPackage,jdbcType=VARCHAR},
+      </if>
+      <if test="lossPacket != null" >
+        #{lossPacket,jdbcType=REAL},
+      </if>
+    </trim>
+  </insert>
+  
+  <select id="selectAllFlow" resultType="com.vcmy.entity.FlowMonitor">
+    select * from flow_monitor
+    <where>
+      <if test="START!=null  or END!=null ">`time` between #{START} and #{END}</if>
+    </where>
+  </select>
+</mapper>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.UserActionDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.UserAction" >
+    <id column="useractionId" property="useractionId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="TIMESTAMP" />
+    <result column="IP" property="IP" jdbcType="VARCHAR" />
+    <result column="module" property="module" jdbcType="VARCHAR" />
+    <result column="action" property="action" jdbcType="VARCHAR" />
+    <result column="log" property="log" jdbcType="VARCHAR" />
+    <result column="result" property="result" jdbcType="VARCHAR" />
+    <result column="reason" property="reason" jdbcType="VARCHAR" />
+  </resultMap>
+  <insert id="insert" parameterType="com.vcmy.entity.UserAction" >
+    insert into sys_user_action (useractionId,name, time, IP,
+      module, action, log, reason,
+      result)
+    values (#{useractionId,jdbcType=INTEGER},#{name,jdbcType=VARCHAR}, #{time,jdbcType=TIMESTAMP}, #{IP,jdbcType=VARCHAR},
+      #{module,jdbcType=VARCHAR}, #{action,jdbcType=VARCHAR}, #{log,jdbcType=VARCHAR}, #{reason,jdbcType=VARCHAR},
+      #{result,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.UserAction" >
+    insert into sys_user_action
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="useractionId != null" >
+        useractionId,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="IP != null" >
+        IP,
+      </if>
+      <if test="module != null" >
+        module,
+      </if>
+      <if test="action != null" >
+        action,
+      </if>
+      <if test="log != null" >
+        log,
+      </if>
+      <if test="reason != null" >
+        reason,
+      </if>
+      <if test="result != null" >
+        result,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="useractionId != null" >
+        #{useractionId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="IP != null" >
+        #{IP,jdbcType=VARCHAR},
+      </if>
+      <if test="module != null" >
+        #{module,jdbcType=VARCHAR},
+      </if>
+      <if test="action != null" >
+        #{action,jdbcType=VARCHAR},
+      </if>
+      <if test="log != null" >
+        #{log,jdbcType=VARCHAR},
+      </if>
+      <if test="reason != null" >
+        #{reason,jdbcType=VARCHAR},
+      </if>
+      <if test="result != null" >
+        #{result,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectLog" parameterType="com.vcmy.entity.UserAction" resultMap="BaseResultMap">
+    select * from sys_user_action
+    <where>
+        `time` between #{START} and #{END}
+      <if test="searchValue != null and searchValue != ''">and `name` like concat('%',#{searchValue},'%') </if>
+      <if test="IP != null and IP != ''">and IP like concat('%',#{IP},'%') </if>
+      <if test="result != null and result != ''">and result like concat('%',#{result},'%') </if>
+      <if test="module != null and module != ''">and `module` like concat('%',#{module},'%') </if>
+    </where>
+    ORDER by time DESC
+  </select>
+</mapper>

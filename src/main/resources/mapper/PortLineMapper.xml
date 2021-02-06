@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vcmy.dao.PortLineDao" >
+  <resultMap id="BaseResultMap" type="com.vcmy.entity.PortLine" >
+    <id column="lineId" property="lineId" jdbcType="INTEGER" />
+    <result column="inPortId" property="inPortId" jdbcType="INTEGER" />
+    <result column="outPortId" property="outPortId" jdbcType="INTEGER" />
+    <result column="rate" property="rate" jdbcType="VARCHAR" />
+    <result column="strategyId" property="strategyId" jdbcType="INTEGER" />
+    <!-- 一对多的关系 一个连线有多个规则-->
+    <!-- property: 指的是集合属性的值, ofType：指的是集合中元素的类型 -->
+    <collection property="ruleList" ofType="java.lang.Integer">
+      <id column="ruleId" property="ruleId" jdbcType="INTEGER" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    lineId, inPortId, outPortId, rate ,strategyId
+  </sql>
+  <select id="selectByPrimaryKey" resultType="com.vcmy.entity.PortLine" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from portline
+    where lineId = #{lineId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from portline
+    where lineId = #{lineId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.vcmy.entity.PortLine" >
+    insert into portline (lineId, inPortId, outPortId, 
+      rate,strategyId)
+    values (#{lineId,jdbcType=INTEGER}, #{inPortId,jdbcType=INTEGER}, #{outPortId,jdbcType=INTEGER},
+      #{rate,jdbcType=VARCHAR},#{strategyId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.vcmy.entity.PortLine" useGeneratedKeys="true" keyProperty="lineId" keyColumn="lineId">
+    insert into portline
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        lineId,
+      </if>
+      <if test="inPortId != null" >
+        inPortId,
+      </if>
+      <if test="outPortId != null" >
+        outPortId,
+      </if>
+      <if test="rate != null" >
+        rate,
+      </if>
+      <if test="strategyId != null" >
+        strategyId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        #{lineId,jdbcType=INTEGER},
+      </if>
+      <if test="inPortId != null" >
+        #{inPortId,jdbcType=INTEGER},
+      </if>
+      <if test="outPortId != null" >
+        #{outPortId,jdbcType=INTEGER},
+      </if>
+      <if test="rate != null" >
+        #{rate,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null" >
+        #{strategyId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.vcmy.entity.PortLine" >
+    update portline
+    <set >
+      <if test="inPortId != null" >
+        inPortId = #{inPortId,jdbcType=INTEGER},
+      </if>
+      <if test="outPortId != null" >
+        outPortId = #{outPortId,jdbcType=INTEGER},
+      </if>
+      <if test="rate != null" >
+        rate = #{rate,jdbcType=VARCHAR},
+      </if>
+      <if test="strategyId != null" >
+        strategyId = #{strategyId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where lineId = #{lineId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.vcmy.entity.PortLine" >
+    update portline
+    set inPortId = #{inPortId,jdbcType=INTEGER},
+      outPortId = #{outPortId,jdbcType=INTEGER},
+      rate = #{rate,jdbcType=VARCHAR},
+      strategyId = #{strategyId,jdbcType=INTEGER}
+    where lineId = #{lineId,jdbcType=INTEGER}
+  </update>
+
+  <update id="updatePortLine" parameterType="com.vcmy.entity.PortLine">
+    update portline
+    set
+      rate = #{rate,jdbcType=VARCHAR}
+    where
+        inPortId = #{inPortId,jdbcType=INTEGER} and outPortId = #{outPortId,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insertLineRule">
+    insert into line_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        lineId,
+      </if>
+      <if test="ruleId != null" >
+        ruleId,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        #{lineId,jdbcType=INTEGER},
+      </if>
+      <if test="ruleId != null" >
+        #{ruleId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <delete id="deleteLineRule" parameterType="java.lang.Integer">
+    delete from line_rule
+    where ruleId = #{ruleId,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="deletePortLine">
+    delete from portline where inPortId=#{inPortId} and outPortId=#{outPortId} and strategyId=#{strategyId}
+  </delete>
+
+  <select id="selectPortLine" resultMap="BaseResultMap" parameterType="com.vcmy.entity.PortLine">
+    select portline.lineId,inPortId,outPortId,rate,ruleId,strategyId
+    from portline,line_rule
+    <where>
+        portline.lineId=line_rule.lineId
+      <if test="portIds!=null and portIds.size>0">
+        and (
+        portline.inPortId in
+        <foreach collection="portIds" item="item" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+        or
+        portline.outPortId in
+        <foreach collection="portIds" item="item" separator="," open="(" close=")">
+          #{item}
+        </foreach>
+        )
+      </if>
+      <if test="lineId!=null">
+          and line_rule.lineId = #{lineId,jdbcType=INTEGER}
+      </if>
+      <if test="inPortId!=null">
+        and inPortId = #{inPortId,jdbcType=INTEGER}
+      </if>
+      <if test="outPortId!=null">
+        and outPortId = #{outPortId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+</mapper>

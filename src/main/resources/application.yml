@@ -1,0 +1,184 @@
+# ===================================================================
+# Spring Boot configuration.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+# ===================================================================
+# configuration for the common use
+# ===================================================================
+spring:
+  profiles:
+    active: dev
+
+# ===================================================================
+# configuration for the "dev" profile.
+# ===================================================================
+
+---
+spring:
+  profiles: dev
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  devtools:
+    restart:
+      enabled: true
+  servlet:
+    multipart:
+      #请求单文件最大大小
+      max-file-size: 10MB
+      #请求多文件最大大小
+      max-request-size: 100MB
+  jpa:
+    open-in-view: false
+
+# 上传路径: uploadDir 上传路径; returnDir 返回路径;
+upload:
+  uploadDir: E:\job\upload\
+  returnDir: E:\job\upload\
+
+druid:
+  type: com.alibaba.druid.pool.DruidDataSource
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://10.0.219.19:3306/tapcontroller?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+  username: root
+  password: Vcmy8002@external.com!
+  # 初始化大小，最小，最大`
+  initialSize: 1
+  minIdle: 3
+  maxActive: 20
+  # 配置获取连接等待超时的时间
+  maxWait: 60000
+  # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+  timeBetweenEvictionRunsMillis: 60000
+  # 配置一个连接在池中最小生存的时间，单位是毫秒
+  minEvictableIdleTimeMillis: 30000
+  validationQuery: select 'x'
+  testWhileIdle: true
+  testOnBorrow: false
+  testOnReturn: false
+  # 打开PSCache，并且指定每个连接上PSCache的大小
+  poolPreparedStatements: true
+  maxPoolPreparedStatementPerConnectionSize: 20
+  # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+  filters: stat,wall,slf4j
+  # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+  connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 合并多个DruidDataSource的监控数据
+    #useGlobalDataSourceStat: true
+
+mybatis:
+  mapperLocations: classpath:mapper/*Mapper.xml
+  typeAliasesPackage: com.vcmy.entity
+
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+
+#ehcache:
+#  configLocation: classpath:config/ehcache-config.xml
+
+logging:
+  level:
+    #com.vcmy: error
+    com.vcmy: debug
+    org.springframework: warn
+    org.spring.springboot.dao: error
+
+server:
+#  port: 8096
+  port: 8097
+  tomcat:
+    uri-encoding: utf-8
+    max-threads: 100
+    max-http-header-size: 10240
+    max-connections: 100
+    protocol-header: HEAD,PUT,DELETE,TRACE,COPY,SEARCH,PROPFIND,GET,POST
+#  ssl:
+#    #    证书路径
+#    key-store: tomcat.key
+#    key-store-type: JKS
+#    key-alias: ximai
+#    #    配置密码，就是在生成证书的时候输入的密码
+#    key-store-password: ximaivcmy
+
+#Zabbix配置信息
+zabbix:
+  user: Admin
+  pwd: zabbix
+  userid: 1
+  apiurl: http://10.0.219.31/zabbix/api_jsonrpc.php
+  licensePath: /opt
+
+#Zabbix Host 默认的一些属性
+#该属性有主机所属的群组，由于目前不需要对群组进行设置，这里给出一个默认值，系统自带的群组，其值在groups表中
+host:
+  groupid: 1
+  #目前模板是由我们自定义好，在安装部署Zabbix时，自导入模板的，一经导入，其ID是固定的。不同环境地部署，其值可能不一样。其值是hosts表中的hostid，模板名为network traffic visualization template
+  templateid: 10263
+
+#实验设备信息
+device:
+  Ip: 10.0.219.31
+#  Ip: 10.0.212.151
+  User: root
+  Password: root
+  Port: 22
+  #zabbix上设备hostid
+  HostId: 10272
+
+#计费设备ip地址
+charge:
+  chargeIp1: 20.0.1.1
+  chargeIp2: 20.0.1.2
+  chargeIp3: 20.0.1.3
+
+sflow:
+  url: http://10.0.214.67:8008
+  #url: http://127.0.0.1:8008
+  #url: http://10.0.213.155:8008
+
+  #####################   定义流          ######################
+  addFlow: /flow/?/json
+  #####################   //删除流          ######################
+  deleteFlow: /flow/?/json
+  #####################   定义阈值          ######################
+  addThreshold: /threshold/?/json
+  #####################   删除阈值         ######################
+  deleteThreshold: /threshold/?/json
+  #####################   定义group          ######################
+  addGroup: /group/?/json
+  #####################   删除group          ######################
+  deleteGroup: /group/?/json
+  #####################   获取所有events          ######################
+  getAllEvents: /events/json
+  #####################   获取所有activeflows         ######################
+  getActiveflows: /activeflows/?/./json
+
+# ===================================================================
+# configuration for the "pro" profile.
+# ===================================================================
+---
+spring:
+  profiles: pro
+#logging:
+#    config: classpath:logback-spring.xml
+
+# logoPostfix: 结尾格式 ; uploadDir: 上传路径; returnDir: 返回路径;
+
+logging:
+  path: classpath:logs
+  file: logger.log
